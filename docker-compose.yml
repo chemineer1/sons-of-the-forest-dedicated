@@ -1,0 +1,10 @@
+services:
+  sotf-server:
+    container_name: sotf-server
+    image: chemineer/sons-of-the-forest-dedicated:latest
+    #build: .
+    network_mode: "host"
+    restart: always
+    init: true
+    volumes:
+      - ./userdata:/app/sonsoftheforest/userdata
