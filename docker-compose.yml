@@ -3,8 +3,6 @@ services:
     container_name: sotf-server
     image: chemineer/sons-of-the-forest-dedicated:latest
     #build: .
-    network_mode: "host"
-    restart: always
     init: true
     ports:
       - "8766:8766/udp" # Game port
@@ -12,3 +10,4 @@ services:
       - "9700:9700/udp" # Blob sync port
     volumes:
       - ./userdata:/app/sonsoftheforest/userdata
+    restart: always
