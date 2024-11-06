@@ -12,7 +12,8 @@ ENV LANG=en_US.UTF-8 \
     WINEPREFIX=/app/wine \
     WINEARCH=win64 \
     WINEDEBUG=-all \
-    DISPLAY=:1.0
+    DISPLAY=:1.0 \
+    HOME=/app/steamcmd
 
 RUN mkdir /app/steamcmd /app/sonsoftheforest /app/wine \
     && apt-get update \
@@ -39,14 +40,25 @@ RUN mkdir /app/steamcmd /app/sonsoftheforest /app/wine \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Create steam user
+RUN useradd --no-create-home --shell /bin/false steam
+
+# Change ownership
+RUN chown -R steam:steam /app
+
+# Change permissions
+RUN chmod -R 750 /app
+
+# Copy main.sh script
+COPY --chown=steam:steam --chmod=550 main.sh /app/
+
+# Switch to steam user
+USER steam
+
 # Download steamcmd
 RUN ["/bin/bash", "-c", "set -o pipefail && wget -qO- https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz | tar -v -C /app/steamcmd -zx"]
 
 # Download Sons of the Forest dedicated server
 RUN /app/steamcmd/steamcmd.sh +@sSteamCmdForcePlatformType windows +force_install_dir /app/sonsoftheforest +login anonymous +app_update 2465200 validate +quit
-
-COPY --chmod=755 main.sh /app/
-
-# TODO decide if we should run the cmd rootless.
 
 CMD ["/bin/bash", "-c", "/app/main.sh"]
