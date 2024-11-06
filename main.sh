@@ -20,7 +20,7 @@ function startXvfb {
     if ! isXvfbRunning; then
         rm -f /tmp/.X1-lock
         echo "Starting Xvfb"
-        Xvfb :1 -screen 0 1024x768x24 &
+        Xvfb :1 -screen 0 1024x768x24 -nolisten linux &
         echo "Sleeping for a few seconds"
         sleep 10
         echo "Rebooting wine"
