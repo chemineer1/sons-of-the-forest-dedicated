@@ -38,19 +38,13 @@ RUN mkdir /app/steamcmd /app/sonsoftheforest /app/wine \
     && apt-get install -y --no-install-recommends winehq-stable \
     # Clean up
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create steam user
-RUN useradd --no-create-home --shell /bin/false steam
-
-# Change ownership
-RUN chown -R steam:steam /app
-
-# Change permissions
-RUN chmod -R 750 /app
-
-# Copy main.sh script
-COPY --chown=steam:steam --chmod=550 main.sh /app/
+    && rm -rf /var/lib/apt/lists/* \
+    # Create steam user
+    useradd --no-create-home --shell /bin/false steam \
+    # Change ownership
+    chown -R steam:steam /app \
+    # Change permissions
+    chmod -R 750 /app
 
 # Switch to steam user
 USER steam
@@ -60,5 +54,8 @@ RUN ["/bin/bash", "-c", "set -o pipefail && wget -qO- https://steamcdn-a.akamaih
 
 # Download Sons of the Forest dedicated server
 RUN /app/steamcmd/steamcmd.sh +@sSteamCmdForcePlatformType windows +force_install_dir /app/sonsoftheforest +login anonymous +app_update 2465200 validate +quit
+
+# Copy main.sh script
+COPY --chown=steam:steam --chmod=550 main.sh /app/
 
 CMD ["/bin/bash", "-c", "/app/main.sh"]
