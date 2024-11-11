@@ -40,11 +40,11 @@ RUN mkdir /app/steamcmd /app/sonsoftheforest /app/wine \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     # Create steam user
-    useradd --no-create-home --shell /bin/false steam \
+    && useradd --no-create-home --shell /bin/false steam \
     # Change ownership
-    chown -R steam:steam /app \
+    && chown -R steam:steam /app \
     # Change permissions
-    chmod -R 750 /app
+    && chmod -R 750 /app
 
 # Switch to steam user
 USER steam
