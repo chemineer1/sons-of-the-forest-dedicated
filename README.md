@@ -67,4 +67,4 @@ You might occassionally see the following error in the console when starting the
 ```
 wineserver: server/fd.c:1622: set_fd_events: Assertion 'poll_users[user] == fd' failed.
 ```
-If this occurs, simply `docker compose stop` or `docker compose down` and them bring it back up. It does not seem to happen twice in a row.
+If this occurs, simply `docker compose stop` or `docker compose down` and then bring it back up. It does not seem to happen twice in a row.
