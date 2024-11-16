@@ -1,5 +1,13 @@
 #!/bin/bash
 
+function isXorgRunning {
+    if pgrep -f "Xorg :1" > /dev/null; then
+        true
+    else
+        false
+    fi
+}
+
 function isSonsServerRunning {
     if pgrep -f "SonsOfTheForestDS.exe" > /dev/null; then
         true
@@ -9,9 +17,13 @@ function isSonsServerRunning {
 }
 
 function startXorg {
-    mkdir -p /app/log
-    Xorg :1 -noreset +extension GLX +extension RANDR +extension RENDER -logfile /app/log/xorg-dummy.log -nolisten unix &
-    sleep 5
+    if ! isXorgRunning; then
+        mkdir -p /app/log
+        Xorg :1 -noreset +extension GLX +extension RANDR +extension RENDER -logfile /app/log/xorg-dummy.log -nolisten unix &
+        sleep 5
+    else
+        echo "Xorg is already running"
+    fi
 }
 
 function startSonsServer {
