@@ -21,7 +21,7 @@ function startXorg {
         echo "Starting Xorg"
         rm -f /tmp/.X1-lock # File should not exist if Xorg is not running
         mkdir -p /app/log
-        Xorg :1 -noreset +extension GLX +extension RANDR +extension RENDER -logfile /app/log/xorg-dummy.log -nolisten unix &
+        Xorg :1 -noreset -logfile /app/log/xorg-dummy.log -nolisten unix &
         sleep 5
     else
         echo "Cannot start Xorg. It is already running."
