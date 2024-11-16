@@ -10,7 +10,7 @@ function isSonsServerRunning {
 
 function startXorg {
     mkdir -p /app/log
-    Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /app/log/xorg-dummy.log -nolisten unix :1 &
+    Xorg :1 -noreset +extension GLX +extension RANDR +extension RENDER -logfile /app/log/xorg-dummy.log -nolisten unix &
     sleep 5
 }
 

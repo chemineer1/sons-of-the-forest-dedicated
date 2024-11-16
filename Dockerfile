@@ -25,9 +25,7 @@ RUN mkdir /app/steamcmd /app/sonsoftheforest /app/wine \
     procps \
     wget \
     winbind \
-    xserver-xorg-core \
     xserver-xorg-video-dummy \
-    xinit \
     # Set locale
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
     && locale-gen \
@@ -57,7 +55,7 @@ RUN ["/bin/bash", "-c", "set -o pipefail && wget -qO- https://steamcdn-a.akamaih
 # Download Sons of the Forest dedicated server
 RUN /app/steamcmd/steamcmd.sh +@sSteamCmdForcePlatformType windows +force_install_dir /app/sonsoftheforest +login anonymous +app_update 2465200 validate +quit
 
-COPY xorg.conf /etc/X11/xorg.conf
+COPY 10-headless.conf /etc/X11/xorg.conf.d/
 COPY --chown=steam:steam --chmod=550 main.sh /app/
 
 CMD ["/bin/bash", "-c", "/app/main.sh"]
