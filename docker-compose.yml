@@ -1,8 +1,9 @@
 services:
-  sotf-server:
-    container_name: sotf-server
+  sons-server:
+    container_name: sons-server
+    build: .
     image: chemineer/sons-of-the-forest-dedicated:latest
-    #build: .
+    #image: sons-of-the-forest-dedicated
     restart: always
     init: true
     ports:

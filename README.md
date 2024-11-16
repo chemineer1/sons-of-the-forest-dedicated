@@ -4,7 +4,7 @@ Host your own Sons of the Forest dedicated server on Linux. Easily deploy with D
 
 ## 🛖 Description
 
-With this repo, you can host your own Sons of the Forest dedicated server on a linux machine. It uses Wine 🍷, because the game server is written for Windows, and Xvfb (X Virtual FrameBuffer) so that it can run headless (without display, mouse, or keyboard). The whole thing is packaged in a Docker image so it's easy to deploy.
+With this repo, you can host your own Sons of the Forest dedicated server on a linux machine. It uses Wine 🍷, because the game server is written for Windows, and the xserver-xorg-video-dummy driver so that it can run headless (without display, mouse, or keyboard). The whole thing is packaged in a Docker image so it's easy to deploy.
 
 ## 🪓 Prerequisites
 
@@ -26,7 +26,7 @@ sudo systemctl start docker
 
 1. Create a new directory in the repo's root directory called **userdata**. This folder will remain even if you remove the container and it holds the saved game data.
 2. In **userdata**, create two files called **dedicatedserver.cfg** and **ownerswhitelist.txt**. Write configuration data into these files according to the example files provided in this repo, and the [configuration guide](https://steamcommunity.com/sharedfiles/filedetails/?id=2992700419&snr=). At a minimum, you should set the server name and password.
-3. You may want to build your own image to get the latest game updates. In that case open **docker-compose.yml**, uncomment the `build` element and comment out the `image` element.
+3. You may want to build your own image to get the latest game updates. In that case open **docker-compose.yml**, comment out the first `image` element and uncomment the second `image` element.
 
 ## 🧟 Usage
 
@@ -67,4 +67,4 @@ You might occassionally see the following error in the console when starting the
 ```
 wineserver: server/fd.c:1622: set_fd_events: Assertion 'poll_users[user] == fd' failed.
 ```
-If this occurs, simply `docker compose stop` or `docker compose down` and them bring it back up. It does not seem to happen twice in a row.
+If this occurs, simply `docker compose stop` or `docker compose down` and then bring it back up. It does not seem to happen twice in a row.

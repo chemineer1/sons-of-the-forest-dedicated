@@ -1,7 +1,7 @@
 #!/bin/bash
 
-function isXvfbRunning {
-    if pgrep -f "Xvfb :1" > /dev/null; then
+function isXorgRunning {
+    if pgrep -f "Xorg :1" > /dev/null; then
         true
     else
         false
@@ -16,35 +16,36 @@ function isSonsServerRunning {
     fi
 }
 
-function startXvfb {
-    if ! isXvfbRunning; then
-        rm -f /tmp/.X1-lock
-        echo "Starting Xvfb"
-        Xvfb :1 -screen 0 1024x768x24 -nolisten unix &
-        echo "Sleeping for a few seconds"
-        sleep 10
-        echo "Rebooting wine"
-        wineboot -r
+function startXorg {
+    if ! isXorgRunning; then
+        echo "Starting Xorg"
+        rm -f /tmp/.X1-lock # File should not exist if Xorg is not running
+        mkdir -p /app/log
+        Xorg :1 -noreset -logfile /app/log/xorg-dummy.log -nolisten unix &
+        sleep 5
     else
-        echo "Xvfb :1 is already running"
+        echo "Cannot start Xorg. It is already running."
     fi
 }
 
 function startSonsServer {
     if ! isSonsServerRunning; then
-        cd /app/sonsoftheforest
         echo "Starting the game server"
+        cd /app/sonsoftheforest
         exec wine64 SonsOfTheForestDS.exe -userdatapath userdata
     else
-        echo "The game server is already running"
+        echo "Cannot start the game server. It is already running."
     fi
 }
 
 function main {
-    rm -rf /app/wine
+    cat ascii_art.txt
     echo "Initializing wine"
+    rm -rf /app/wine
     wineboot --init
-    startXvfb
+    startXorg
+    echo "Rebooting wine"
+    wineboot -r
     startSonsServer
 }
 
