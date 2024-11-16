@@ -25,7 +25,7 @@ sudo systemctl start docker
 ## 🛠️ Configuration
 
 1. Create a new directory in the repo's root directory called **userdata**. This folder will remain even if you remove the container and it holds the saved game data.
-2. In **userdata**, create two files called **dedicatedserver.cfg** and **ownerswhitelist.txt**. Write configuration data into these files according to the example files provided in this repo, and the [configuration guide](https://steamcommunity.com/sharedfiles/filedetails/?id=2992700419&snr=). At a minimum, you should set the server name and password.
+2. In **userdata**, create two files called **dedicatedserver.cfg** and **ownerswhitelist.txt**. Write configuration data into these files according to the example files provided in this repo, and the [configuration guide](https://steamcommunity.com/sharedfiles/filedetails/?id=2992700419&snr=). At a minimum, you should set the server name and password. As mentioned in the troubleshooting section below, you may want to shorten the interval between autosaves to avoid losing progress.
 3. You may want to build your own image to get the latest game updates. In that case open **docker-compose.yml**, comment out the first `image` element and uncomment the second `image` element.
 
 ## 🧟 Usage
@@ -68,3 +68,7 @@ You might occassionally see the following error in the console when starting the
 wineserver: server/fd.c:1622: set_fd_events: Assertion 'poll_users[user] == fd' failed.
 ```
 If this occurs, simply `docker compose stop` or `docker compose down` and then bring it back up. It does not seem to happen twice in a row.
+
+### Lost progress in game
+
+Any structures you make in the game since the last autosave will be lost if the server shuts down before the next autosave. In the `dedicatedserver.cfg` file, change `SaveInterval` to 120, or some other relatively short time, so you don't have to wait long for the next save.
