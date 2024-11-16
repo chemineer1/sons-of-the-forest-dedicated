@@ -19,7 +19,7 @@ function isSonsServerRunning {
 function startXorg {
     if ! isXorgRunning; then
         echo "Starting Xorg"
-        rm /tmp/.X1-lock
+        rm -f /tmp/.X1-lock # File should not exist if Xorg is not running
         mkdir -p /app/log
         Xorg :1 -noreset +extension GLX +extension RANDR +extension RENDER -logfile /app/log/xorg-dummy.log -nolisten unix &
         sleep 5
