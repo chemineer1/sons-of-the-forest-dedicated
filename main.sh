@@ -18,20 +18,22 @@ function isSonsServerRunning {
 
 function startXorg {
     if ! isXorgRunning; then
+        echo "Starting Xorg"
         mkdir -p /app/log
         Xorg :1 -noreset +extension GLX +extension RANDR +extension RENDER -logfile /app/log/xorg-dummy.log -nolisten unix &
         sleep 5
     else
-        echo "Xorg is already running"
+        echo "Cannot start Xorg. It is already running."
     fi
 }
 
 function startSonsServer {
     if ! isSonsServerRunning; then
+        echo "Starting the game server"
         cd /app/sonsoftheforest
         exec wine64 SonsOfTheForestDS.exe -userdatapath userdata
     else
-        echo "The game server is already running"
+        echo "Cannot start the game server. It is already running."
     fi
 }
 
@@ -39,11 +41,9 @@ function main {
     echo "Initializing wine"
     rm -rf /app/wine
     wineboot --init
-    echo "Starting Xorg"
     startXorg
     echo "Rebooting wine"
     wineboot -r
-    echo "Starting the game server"
     startSonsServer
 }
 
