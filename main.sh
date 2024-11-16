@@ -39,6 +39,7 @@ function startSonsServer {
 }
 
 function main {
+    cat ascii_art.txt
     echo "Initializing wine"
     rm -rf /app/wine
     wineboot --init
