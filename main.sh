@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function isXorgRunning {
     if pgrep -f "Xorg :1" > /dev/null; then
