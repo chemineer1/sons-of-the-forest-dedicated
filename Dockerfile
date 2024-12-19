@@ -59,4 +59,4 @@ COPY 10-headless.conf /etc/X11/xorg.conf.d/
 COPY --chown=steam:steam --chmod=550 main.sh /app/
 COPY --chown=steam:steam --chmod=440 ascii_art.txt /app/
 
-CMD ["/bin/bash", "-c", "/app/main.sh"]
+ENTRYPOINT ["/app/main.sh"]
