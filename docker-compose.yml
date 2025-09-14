@@ -1,14 +1,37 @@
 services:
-  sons-server:
-    container_name: sons-server
-    build: .
-    image: chemineer/sons-of-the-forest-dedicated:latest
-    #image: sons-of-the-forest-dedicated
+
+  x-service:
+    build: ./x-service
+    container_name: x-service
+    healthcheck:
+      test: [ "CMD-SHELL", "xdpyinfo -display :0 > /dev/null || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    init: true
     restart: always
+    volumes:
+      - xserver:/tmp/.X11-unix
+
+  game-server:
+    build: ./game-service
+    container_name: game-service
+    depends_on:
+      x-service:
+        condition: service_healthy
+    environment:
+      - DISPLAY=:0
     init: true
     ports:
       - "8766:8766/udp" # Game port
       - "27016:27016/udp" # Query port
       - "9700:9700/udp" # Blob sync port
+    restart: always
     volumes:
-      - ./userdata:/app/sonsoftheforest/userdata
+      - game-data:/app/sonsoftheforest/userdata
+      - xserver:/tmp/.X11-unix
+
+volumes:
+  game-data:
+  xserver:

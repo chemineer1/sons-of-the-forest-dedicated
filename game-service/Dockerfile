@@ -12,30 +12,30 @@ ENV LANG=en_US.UTF-8 \
     WINEPREFIX=/app/wine \
     WINEARCH=win64 \
     WINEDEBUG=-all \
-    DISPLAY=:1.0 \
-    HOME=/app/steamcmd
+    HOME=/app/steamcmd \
+    XDG_RUNTIME_DIR=/tmp
 
 RUN mkdir /app/steamcmd /app/sonsoftheforest /app/wine \
+    && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
     ca-certificates \
+    gpg \
     lib32gcc-s1 \
     locales \
-    nano \
     procps \
     wget \
     winbind \
-    xserver-xorg-video-dummy \
+    x11-utils \
     # Set locale
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
     && locale-gen \
     # Install wine
-    && dpkg --add-architecture i386 \
     && mkdir -pm755 /etc/apt/keyrings \
-    && wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key \
+    && wget -O - https://dl.winehq.org/wine-builds/winehq.key | gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key - \
     && wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources \
     && apt-get update \
-    && apt-get install -y --no-install-recommends winehq-stable \
+    && apt-get install -y --install-recommends winehq-stable \
     # Clean up
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -52,11 +52,8 @@ USER steam
 # Download steamcmd
 RUN ["/bin/bash", "-c", "set -o pipefail && wget -qO- https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz | tar -v -C /app/steamcmd -zx"]
 
-# Download Sons of the Forest dedicated server
-RUN /app/steamcmd/steamcmd.sh +@sSteamCmdForcePlatformType windows +force_install_dir /app/sonsoftheforest +login anonymous +app_update 2465200 validate +quit
+RUN wine64 wineboot --init
 
-COPY 10-headless.conf /etc/X11/xorg.conf.d/
 COPY --chown=steam:steam --chmod=550 main.sh /app/
-COPY --chown=steam:steam --chmod=440 ascii_art.txt /app/
 
 ENTRYPOINT ["/app/main.sh"]
